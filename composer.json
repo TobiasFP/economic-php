@@ -1,0 +1,23 @@
+{
+    "name": "tobiasfp/economics",
+    "type": "library",
+    "require": {
+        "php": ">=7.4",
+        "guzzlehttp/guzzle": "^6.2",
+        "phpunit/phpunit": "^9",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tobiasfp\\Economics\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Tobias",
+            "email": "tobias@osandweb.dk"
+        }
+    ]
+}
