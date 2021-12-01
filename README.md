@@ -2,7 +2,7 @@
 
 ## What is it
 
-A basic wrapper around the Economics api, with helper functions to each object..
+A basic wrapper around the Economics api, with input & output validation/verification.
 
 ## Why no docblocks?
 
