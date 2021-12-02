@@ -5,16 +5,16 @@ use Tobiasfp\Economics\Filter;
 
 class filterTest extends TestCase
 {
-    private Economics $econ;
+    private Filter $filter;
 
     public function setup(): void
     {
-        $this->econ = new Economics("demo", "demo");
+        $this->filter = new Filter('name', '$eq:', 'Tobias');
     }
 
     public function testFilterToString()
     {
-        //self::assertEquals(1, $this->econ->customers()[0]->customerNumber);
+        self::assertEquals('name$eq:Tobias', $this->filter->toFilterString());
     }
 
 }
