@@ -1,5 +1,5 @@
 {
-    "name": "tobiasfp/economics",
+    "name": "tobiasfp/economics-php",
     "type": "library",
     "require": {
         "php": ">=7.4",
@@ -16,7 +16,6 @@
     "license": "proprietary",
     "authors": [
         {
-
             "name": "Tobias",
             "email": "tobias@osandweb.dk"
         }
