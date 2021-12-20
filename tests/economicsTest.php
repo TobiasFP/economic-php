@@ -15,7 +15,11 @@ class economicsTest extends TestCase
 
     public function testCustomers()
     {
-        self::assertEquals(1, $this->econ->customers()[0]->customerNumber);
+        $customers = $this->econ->customers();
+        self::assertEquals(1, $customers[0]->customerNumber);
+        foreach ($customers as $customer) {
+            self::assertTrue($this->econ->isValidCustomerObject($customer));
+        }
     }
 
     public function testCustomer()
@@ -23,11 +27,29 @@ class economicsTest extends TestCase
         self::assertEquals(1, $this->econ->customer(1)->customerNumber);
     }
 
+    /**
+     * @throws Exception
+     */
+    public function testCreateCustomer()
+    {
+        $customer = $this->econ->createCustomer("USD", $this->econ->customerGroup(1), "test", $this->econ->paymentTerms(1), $this->econ->vatZone(1));
+        self::assertTrue($this->econ->isValidCustomerObject($customer));
+    }
+
+    public function testCustomerGroups()
+    {
+        self::assertEquals(1, $this->econ->customerGroups()[0]->customerGroupNumber);
+    }
+
+    public function testCustomerGroup()
+    {
+        self::assertEquals(1, $this->econ->customerGroup(1)->customerGroupNumber);
+    }
+
     public function testInvoiceDrafts()
     {
         self::assertEquals(123267, $this->econ->invoiceDrafts()[0]->draftInvoiceNumber);
     }
-
 
     public function testInvoiceDraft()
     {
@@ -38,17 +60,19 @@ class economicsTest extends TestCase
     {
         $customer = $this->econ->customer(1);
         $date = Carbon::now();
-        $layout = new stdClass;
-        $paymentTerms = new stdClass;
-        self::assertIsObject($this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "DKK"));
+        $layout = $this->econ->layout(19);
+        $paymentTerms = $this->econ->paymentTerms(1);
+        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "DKK");
+        self::assertEquals("DKK", $draft->currency);
     }
 
     public function testCreateInvoiceDraftWithInvalidCurrency()
     {
         $customer = $this->econ->customer(1);
         $date = Carbon::now();
-        $layout = new stdClass;
-        $paymentTerms = new stdClass;
+        $layout = $this->econ->layout(19);
+        $paymentTerms = $this->econ->paymentTerms(1);
+        // TODO: Catch more specific exception
         $this->expectException(Exception::class);
         $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "asdf");
     }
@@ -62,9 +86,41 @@ class economicsTest extends TestCase
 
     public function testValidateCurrency()
     {
-        self::assertTrue($this->econ->validateCurrency("DKK", true));
-        self::assertFalse($this->econ->validateCurrency("fsafasf", true));
-        self::assertTrue($this->econ->validateCurrency("DKK", false));
-        self::assertFalse($this->econ->validateCurrency("fsafasf", false));
+        self::assertTrue($this->econ->isValidCurrency("DKK", true));
+        self::assertFalse($this->econ->isValidCurrency("fsafasf", true));
+        self::assertTrue($this->econ->isValidCurrency("DKK", false));
+        self::assertFalse($this->econ->isValidCurrency("fsafasf", false));
     }
+
+    public function testPaymentTerms()
+    {
+        self::assertEquals(1, $this->econ->paymentTerms(1)->paymentTermsNumber);
+    }
+
+    public function testPaymentTermsList()
+    {
+        self::assertEquals(1, $this->econ->paymentTermsList()[0]->paymentTermsNumber);
+    }
+
+
+    public function testLayoutGroups()
+    {
+        self::assertEquals(19, $this->econ->layoutGroups()[0]->layoutNumber);
+    }
+
+    public function testLayout()
+    {
+        self::assertEquals(19, $this->econ->layout(19)->layoutNumber);
+    }
+
+    public function testVatZone()
+    {
+        self::assertEquals(1, $this->econ->vatZone(1)->vatZoneNumber);
+    }
+
+    public function testVatZones()
+    {
+        self::assertEquals(1, $this->econ->vatZones()[0]->vatZoneNumber);
+    }
+
 }
