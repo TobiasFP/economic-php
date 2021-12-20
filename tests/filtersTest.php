@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Tobiasfp\Economics\Filters;
-use Tobiasfp\Economics\Filter;
+use Economics\Filters;
+use Economics\Filter;
 
 class filtersTest extends TestCase
 {

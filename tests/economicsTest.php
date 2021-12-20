@@ -2,15 +2,14 @@
 
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
-use Tobiasfp\Economics\Economics;
 
 class economicsTest extends TestCase
 {
-    private Economics $econ;
+    private Economics\Economics $econ;
 
     public function setup(): void
     {
-        $this->econ = new Economics("demo", "demo");
+        $this->econ = new Economics\Economics("demo", "demo");
     }
 
     public function testCustomers()

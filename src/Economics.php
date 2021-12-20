@@ -1,6 +1,6 @@
 <?php
 
-namespace Tobiasfp\Economics;
+namespace Economics;
 
 use carbon\carbon;
 use Exception;

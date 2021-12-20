@@ -5,11 +5,11 @@
         "php": ">=7.4",
         "guzzlehttp/guzzle": "^6.2",
         "ext-json": "*",
-        "nesbot/carbon": "2.x-dev"
+        "nesbot/carbon": "2.55.2"
     },
     "autoload": {
         "psr-4": {
-            "Tobiasfp\\Economics\\": "src/"
+            "Economics\\": "src/"
         }
     },
     "minimum-stability": "dev",

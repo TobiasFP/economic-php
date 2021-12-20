@@ -1,6 +1,6 @@
 <?php
 
-namespace Tobiasfp\Economics;
+namespace Economics;
 
 class Filters
 {

@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Tobiasfp\Economics\Filter;
+use Economics\Filter;
 
 class filterTest extends TestCase
 {
