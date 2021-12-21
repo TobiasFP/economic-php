@@ -1,11 +1,12 @@
 {
   "name": "tobiasfp/economics-php",
   "type": "library",
+  "description": "A wrapper for the E-conomics api",
   "require": {
     "php": ">=7.4",
     "guzzlehttp/guzzle": "^6.2",
     "ext-json": "*",
-    "nesbot/carbon": "2.55.2"
+    "nesbot/carbon": "^2.55.2"
   },
   "autoload": {
     "psr-4": {
@@ -13,7 +14,7 @@
     }
   },
   "minimum-stability": "dev",
-  "license": "MIT License",
+  "license": "MIT",
   "authors": [
     {
       "name": "Tobias",
