@@ -54,7 +54,7 @@ class Economics
     public function createCustomer(string $currency, object $customerGroup, string $name, object $paymentTerms, object $vatZone, string $email = '', string $cvr = '', string $country = "Denmark", string $city = '', string $zip = '', string $address = ''): object
     {
         if (!$this->isValidCurrency($currency)) {
-            throw new InvalidCustomerException("Currency is not allowed");
+            throw new InvalidCurrencyException("Currency is not allowed");
         }
 
         $customerBody = [
