@@ -4,6 +4,6 @@ namespace Economics\Exceptions;
 
 use Exception;
 
-class InvalidCustomerException extends Exception
+class InvalidCurrencyException extends Exception
 {
 }

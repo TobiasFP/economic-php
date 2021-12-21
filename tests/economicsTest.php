@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use Economics\Exceptions\InvalidCurrencyException;
 use PHPUnit\Framework\TestCase;
 
 class economicsTest extends TestCase
@@ -55,6 +56,9 @@ class economicsTest extends TestCase
         self::assertEquals(123267, $this->econ->invoiceDraft(123267)->draftInvoiceNumber);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testCreateInvoiceDraft()
     {
         $customer = $this->econ->customer(1);
@@ -72,7 +76,7 @@ class economicsTest extends TestCase
         $layout = $this->econ->layout(19);
         $paymentTerms = $this->econ->paymentTerms(1);
         // TODO: Catch more specific exception
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidCurrencyException::class);
         $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "asdf");
     }
 

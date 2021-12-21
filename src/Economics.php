@@ -3,6 +3,8 @@
 namespace Economics;
 
 use carbon\carbon;
+use Economics\Exceptions\InvalidCurrencyException;
+use Economics\Exceptions\InvalidCustomerException;
 use Exception;
 use GuzzleHttp\Client;
 
@@ -49,10 +51,10 @@ class Economics
     /**
      * @throws Exception
      */
-    public function createCustomer(string $currency, object $customerGroup, string $name, object $paymentTerms, object $vatZone): object
+    public function createCustomer(string $currency, object $customerGroup, string $name, object $paymentTerms, object $vatZone, string $email = '', string $cvr = '', string $country = "Denmark", string $city = '', string $zip = '', string $address = ''): object
     {
         if (!$this->isValidCurrency($currency)) {
-            throw new Exception("Currency is not allowed");
+            throw new InvalidCustomerException("Currency is not allowed");
         }
 
         $customerBody = [
@@ -60,12 +62,31 @@ class Economics
             'customerGroup' => $customerGroup,
             'name' => $name,
             'paymentTerms' => $paymentTerms,
-            'vatZone' => $vatZone
+            'vatZone' => $vatZone,
+            'country' => $country
         ];
+
+        if ($email !== '') {
+            $customerBody['email'] = $email;
+        }
+
+        if ($cvr !== '') {
+            $customerBody['corporateIdentificationNumber'] = $cvr;
+        }
+
+        if ($city !== '') {
+            $customerBody['city'] = $city;
+        }
+        if ($zip !== '') {
+            $customerBody['zip'] = $zip;
+        }
+        if ($address !== '') {
+            $customerBody['address'] = $address;
+        }
 
         $customer = json_decode($this->client->post("customers/", ['json' => $customerBody])->getBody());
         if (!$this->isValidCustomerObject($customer)) {
-            throw new Exception("Customer not valid");
+            throw new InvalidCustomerException("Customer not valid");
         }
 
         return $customer;
@@ -118,11 +139,11 @@ class Economics
     public function createInvoiceDraft(object $customer, Carbon $date, object $layout, object $paymentterms, string $currency = "DKK", object $recipient = null): object
     {
         if (!$this->isValidCurrency($currency)) {
-            throw new Exception("Currency is not allowed");
+            throw new InvalidCurrencyException("Currency is not allowed");
         }
 
         if (!$this->isValidCustomerObject($customer)) {
-            throw new Exception("Customer not valid");
+            throw new InvalidCustomerException("Customer not valid");
         }
 
         $recipientBody = ($recipient === null) ? $customer : $recipient;
@@ -136,9 +157,7 @@ class Economics
             'recipient' => $recipientBody,
         ];
 
-        $draft = json_decode($this->client->post("/invoices/drafts", ['json' => $draftBody])->getBody());
-
-        return $draft;
+        return json_decode($this->client->post("/invoices/drafts", ['json' => $draftBody])->getBody());
     }
 
     public function paymentTerms(string $id): object

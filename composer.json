@@ -1,26 +1,26 @@
 {
-    "name": "tobiasfp/economics-php",
-    "type": "library",
-    "require": {
-        "php": ">=7.4",
-        "guzzlehttp/guzzle": "^6.2",
-        "ext-json": "*",
-        "nesbot/carbon": "2.55.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "Economics\\": "src/"
-        }
-    },
-    "minimum-stability": "dev",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "Tobias",
-            "email": "tobias@osandweb.dk"
-        }
-    ],
-    "require-dev": {
-        "phpunit/phpunit": "9.5.x-dev"
+  "name": "tobiasfp/economics-php",
+  "type": "library",
+  "require": {
+    "php": ">=7.4",
+    "guzzlehttp/guzzle": "^6.2",
+    "ext-json": "*",
+    "nesbot/carbon": "2.55.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Economics\\": "src/"
     }
+  },
+  "minimum-stability": "dev",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Tobias",
+      "email": "tobias@osandweb.dk"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "9.5.x-dev"
+  }
 }
