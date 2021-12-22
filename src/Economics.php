@@ -4,7 +4,9 @@ namespace Economics;
 
 use carbon\carbon;
 use Economics\Exceptions\InvalidCurrencyException;
-use Economics\Exceptions\InvalidCustomerException;
+use Economics\Exceptions\InvalidFilterException;
+use Economics\Exceptions\tooManyCustomersFoundException;
+use Economics\Exceptions\noCustomersFoundException;
 use Exception;
 use GuzzleHttp\Client;
 
@@ -47,9 +49,30 @@ class Economics
         $customerBody = $this->client->get("customers/" . $id)->getBody();
         return json_decode($customerBody);
     }
+    
+    public function findCustomer(Filters $filters): object {
+        $customers = $this->findCustomers($filters);
+        if(count($customers) > 1 ) {
+            throw new tooManyCustomersFoundException('');
+        }
+        if(count($customers) === 0 ) {
+            throw new noCustomersFoundException('');
+        }
+        return $customers[0];
+    }
+
+    public function findCustomers(Filters $filters): array {
+        // possible filters:
+
+        $filterString = $filters->filter();
+        $customerBody = $this->client->get("customers?" . $filterString)->getBody();
+        $customers = json_decode($customerBody)->collection;
+        return $customers;
+    }
 
     /**
-     * @throws Exception
+     * @throws InvalidCurrencyException
+     * @throws InvalidFilterException
      */
     public function createCustomer(string $currency, object $customerGroup, string $name, object $paymentTerms, object $vatZone, string $email = '', string $cvr = '', string $country = "Denmark", string $city = '', string $zip = '', string $address = ''): object
     {
@@ -86,7 +109,7 @@ class Economics
 
         $customer = json_decode($this->client->post("customers/", ['json' => $customerBody])->getBody());
         if (!$this->isValidCustomerObject($customer)) {
-            throw new InvalidCustomerException("Customer not valid");
+            throw new InvalidFilterException("Customer not valid");
         }
 
         return $customer;
@@ -143,7 +166,7 @@ class Economics
         }
 
         if (!$this->isValidCustomerObject($customer)) {
-            throw new InvalidCustomerException("Customer not valid");
+            throw new InvalidFilterException("Customer not valid");
         }
 
         $recipientBody = ($recipient === null) ? $customer : $recipient;

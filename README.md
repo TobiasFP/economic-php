@@ -13,7 +13,7 @@ Simply add it via composer:
 Then use:
 
     $econ = new Economics\Economics("demo", "demo");
-    $econ->createCustomer("DKK", $this->econ->customerGroup(1), "test" $this->econ->paymentTerms(1), $this->econ->vatZone(1))
+    $econ->createCustomer("DKK", $this->econ->customerGroup(1), "test" $this->econ->paymentTerms(1), $this->econ->vatZone(1));
 
 For better documentation on how to use it, see the economicsTest.php file. Everything has at least one test, so it should give you a good overview.
 

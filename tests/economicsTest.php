@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 use Economics\Exceptions\InvalidCurrencyException;
+use Economics\Filter;
+use Economics\Filters;
 use PHPUnit\Framework\TestCase;
 
 class economicsTest extends TestCase
@@ -25,6 +27,22 @@ class economicsTest extends TestCase
     public function testCustomer()
     {
         self::assertEquals(1, $this->econ->customer(1)->customerNumber);
+    }
+
+    public function testFindCustomer()
+    {
+        $customer = $this->econ->createCustomer("USD", $this->econ->customerGroup(1), "test", $this->econ->paymentTerms(1), $this->econ->vatZone(1), bin2hex(random_bytes(3)) . "@test.dk");
+        $filters = new Filters([new Filter('email', '$eq:', $customer->email)], 'customer');
+        $foundCustomer = $this->econ->findCustomer($filters);
+        self::assertEquals($customer->email, $foundCustomer->email);
+    }
+
+    public function testFindCustomers()
+    {
+        $customer = $this->econ->createCustomer("USD", $this->econ->customerGroup(1), "test", $this->econ->paymentTerms(1), $this->econ->vatZone(1), "test@test.dk");
+        $filters = new Filters([new Filter('email', '$eq:', $customer->email)], 'customer');
+        $foundCustomer = $this->econ->findCustomers($filters)[0];
+        self::assertEquals($customer->email, $foundCustomer->email);
     }
 
     /**
@@ -75,7 +93,6 @@ class economicsTest extends TestCase
         $date = Carbon::now();
         $layout = $this->econ->layout(19);
         $paymentTerms = $this->econ->paymentTerms(1);
-        // TODO: Catch more specific exception
         $this->expectException(InvalidCurrencyException::class);
         $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "asdf");
     }

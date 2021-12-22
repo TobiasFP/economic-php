@@ -6,7 +6,7 @@ use Exception;
 
 class Filter
 {
-    private string $filterType = "";
+    public string $filterType = "";
     private string $operator = "";
     private array $allowedOperators = ['$eq:', '$ne:', '$gt:', '$gte:', '$lt:', '$lte:', '$like:', '$and:', '$or:', '$in:', '$nin:'];
     private string $value = "";

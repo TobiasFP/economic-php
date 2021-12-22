@@ -1,8 +1,9 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Economics\Filters;
+use Economics\Exceptions\InvalidFilterException;
 use Economics\Filter;
+use Economics\Filters;
+use PHPUnit\Framework\TestCase;
 
 class filtersTest extends TestCase
 {
@@ -22,4 +23,17 @@ class filtersTest extends TestCase
         self::assertEquals('filter=name$eq:Tobias$and:date$eq:2021-12-02', $filters->filter());
     }
 
+    public function testBadFilter()
+    {
+        $this->expectException(InvalidFilterException::class);
+        new Filters(["test"]);
+    }
+
+    public function testDisallowedFiltertype()
+    {
+        $this->expectException(InvalidFilterException::class);
+        $filter = new Filter('badFilterType', '$eq:', 'Tobias');
+        $filters = new Filters([$filter], 'customer');
+
+    }
 }
