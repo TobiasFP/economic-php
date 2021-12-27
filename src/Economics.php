@@ -4,6 +4,7 @@ namespace Economics;
 
 use carbon\carbon;
 use Economics\Exceptions\InvalidCurrencyException;
+use Economics\Exceptions\InvalidCustomerException;
 use Economics\Exceptions\InvalidFilterException;
 use Economics\Exceptions\tooManyCustomersFoundException;
 use Economics\Exceptions\noCustomersFoundException;
@@ -166,7 +167,7 @@ class Economics
         }
 
         if (!$this->isValidCustomerObject($customer)) {
-            throw new InvalidFilterException("Customer not valid");
+            throw new InvalidCustomerException("Customer not valid");
         }
 
         $recipientBody = ($recipient === null) ? $customer : $recipient;
