@@ -4,6 +4,8 @@ use Carbon\Carbon;
 use Economics\Exceptions\InvalidCurrencyException;
 use Economics\Filter;
 use Economics\Filters;
+use Economics\Objects\Line;
+use Economics\Objects\Notes;
 use PHPUnit\Framework\TestCase;
 
 class economicsTest extends TestCase
@@ -81,9 +83,31 @@ class economicsTest extends TestCase
     {
         $customer = $this->econ->customer(1);
         $date = Carbon::now();
-        $layout = $this->econ->layout(19);
+        $layout = $this->econ->layout(21);
         $paymentTerms = $this->econ->paymentTerms(1);
-        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "DKK");
+        $notes = new Notes("test");
+        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes);
+        self::assertEquals("", $draft->notes->textLine1);
+        self::assertEquals("test", $draft->notes->heading);
+        self::assertEquals("DKK", $draft->currency);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testCreateInvoiceDraftWithLines()
+    {
+        $customer = $this->econ->customer(1);
+        $date = Carbon::now();
+        $layout = $this->econ->layout(21);
+        $paymentTerms = $this->econ->paymentTerms(1);
+        $notes = new Notes("test");
+        $products = $this->econ->products();
+        $line = new Line($products[0], "test");
+        $lines = [$line];
+        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes, $lines, "DKK");
+        self::assertEquals("", $draft->notes->textLine1);
+        self::assertEquals("test", $draft->notes->heading);
         self::assertEquals("DKK", $draft->currency);
     }
 
@@ -93,8 +117,10 @@ class economicsTest extends TestCase
         $date = Carbon::now();
         $layout = $this->econ->layout(19);
         $paymentTerms = $this->econ->paymentTerms(1);
+        $notes = new Notes("test");
+
         $this->expectException(InvalidCurrencyException::class);
-        $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, "asdf");
+        $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes, [],"asdf");
     }
 
     public function testCurrencies()
@@ -122,6 +148,16 @@ class economicsTest extends TestCase
         self::assertEquals(1, $this->econ->paymentTermsList()[0]->paymentTermsNumber);
     }
 
+    public function testProduct()
+    {
+        self::assertEquals(1, $this->econ->product(1)->productNumber);
+    }
+
+    public function testProducts()
+    {
+        //Really weird that the result includes -->"<-- within the string.
+        self::assertEquals('"334420410410"', (string)$this->econ->products()[0]->productNumber);
+    }
 
     public function testLayoutGroups()
     {

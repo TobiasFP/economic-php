@@ -6,24 +6,21 @@ use carbon\carbon;
 use Economics\Exceptions\InvalidCurrencyException;
 use Economics\Exceptions\InvalidCustomerException;
 use Economics\Exceptions\InvalidFilterException;
-use Economics\Exceptions\tooManyCustomersFoundException;
 use Economics\Exceptions\noCustomersFoundException;
+use Economics\Exceptions\tooManyCustomersFoundException;
+use Economics\Objects\Notes;
 use Exception;
 use GuzzleHttp\Client;
 
 class Economics
 {
-    public string $appToken;
-    public string $grant;
     public Client $client;
 
-    public function __construct(string $appToken, string $grant)
+    public function __construct(string $appToken, string $grantToken)
     {
-        $this->appToken = $appToken;
-        $this->grant = $grant;
         $this->client = new Client([
             'base_uri' => 'https://restapi.e-conomic.com/',
-            'headers' => ['X-AppSecretToken' => $this->appToken, 'X-AgreementGrantToken' => $this->grant, 'Content-Type' => 'application/json']
+            'headers' => ['X-AppSecretToken' => $appToken, 'X-AgreementGrantToken' => $grantToken, 'Content-Type' => 'application/json']
         ]);
     }
 
@@ -50,25 +47,24 @@ class Economics
         $customerBody = $this->client->get("customers/" . $id)->getBody();
         return json_decode($customerBody);
     }
-    
-    public function findCustomer(Filters $filters): object {
+
+    public function findCustomer(Filters $filters): object
+    {
         $customers = $this->findCustomers($filters);
-        if(count($customers) > 1 ) {
+        if (count($customers) > 1) {
             throw new tooManyCustomersFoundException('');
         }
-        if(count($customers) === 0 ) {
+        if (count($customers) === 0) {
             throw new noCustomersFoundException('');
         }
         return $customers[0];
     }
 
-    public function findCustomers(Filters $filters): array {
-        // possible filters:
-
+    public function findCustomers(Filters $filters): array
+    {
         $filterString = $filters->filter();
         $customerBody = $this->client->get("customers?" . $filterString)->getBody();
-        $customers = json_decode($customerBody)->collection;
-        return $customers;
+        return json_decode($customerBody)->collection;
     }
 
     /**
@@ -160,7 +156,7 @@ class Economics
     /**
      * @throws Exception
      */
-    public function createInvoiceDraft(object $customer, Carbon $date, object $layout, object $paymentterms, string $currency = "DKK", object $recipient = null): object
+    public function createInvoiceDraft(object $customer, Carbon $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", object $recipient = null): object
     {
         if (!$this->isValidCurrency($currency)) {
             throw new InvalidCurrencyException("Currency is not allowed");
@@ -179,7 +175,12 @@ class Economics
             'layout' => $layout,
             'paymentTerms' => $paymentterms,
             'recipient' => $recipientBody,
+            'lines' => $Lines,
         ];
+
+        if ($notes->isValid()) {
+            $draftBody['notes'] = $notes;
+        }
 
         return json_decode($this->client->post("/invoices/drafts", ['json' => $draftBody])->getBody());
     }
@@ -194,6 +195,18 @@ class Economics
     {
         $paymentTermsRes = $this->client->get("payment-terms")->getBody();
         return json_decode($paymentTermsRes)->collection;
+    }    
+    
+    public function product(string $id): object
+    {
+        $product = $this->client->get("products/" . $id)->getBody();
+        return json_decode($product);
+    }
+    
+    public function products(): array
+    {
+        $products = $this->client->get("products")->getBody();
+        return json_decode($products)->collection;
     }
 
     public function layoutGroups(): array
