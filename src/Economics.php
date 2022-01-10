@@ -171,7 +171,7 @@ class Economics
         $draftBody = [
             'currency' => $currency,
             'customer' => $customer,
-            'date' => $date,
+            'date' => $date->toIso8601String(),
             'layout' => $layout,
             'paymentTerms' => $paymentterms,
             'recipient' => $recipientBody,
