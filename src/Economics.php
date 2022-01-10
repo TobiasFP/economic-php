@@ -171,7 +171,7 @@ class Economics
         $draftBody = [
             'currency' => $currency,
             'customer' => $customer,
-            'date' => $date->toIso8601String(),
+            'date' => $date->isoFormat('YYYY-MM-DD'),
             'layout' => $layout,
             'paymentTerms' => $paymentterms,
             'recipient' => $recipientBody,
