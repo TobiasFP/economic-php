@@ -114,7 +114,7 @@ class economicsTest extends TestCase
     public function testCreateInvoiceDraftWithInvalidCurrency()
     {
         $customer = $this->econ->customer(1);
-        $date = Carbon::now();
+        $date = Carbon::now()->isoFormat('YYYY-MM-DD');
         $layout = $this->econ->layout(19);
         $paymentTerms = $this->econ->paymentTerms(1);
         $notes = new Notes("test");

@@ -2,7 +2,6 @@
 
 namespace Economics;
 
-use carbon\carbon;
 use Economics\Exceptions\InvalidCurrencyException;
 use Economics\Exceptions\InvalidCustomerException;
 use Economics\Exceptions\InvalidFilterException;
@@ -156,7 +155,7 @@ class Economics
     /**
      * @throws Exception
      */
-    public function createInvoiceDraft(object $customer, Carbon $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", object $recipient = null): object
+    public function createInvoiceDraft(object $customer, string $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", object $recipient = null): object
     {
         if (!$this->isValidCurrency($currency)) {
             throw new InvalidCurrencyException("Currency is not allowed");
@@ -167,11 +166,10 @@ class Economics
         }
 
         $recipientBody = ($recipient === null) ? $customer : $recipient;
-
         $draftBody = [
             'currency' => $currency,
             'customer' => $customer,
-            'date' => $date->isoFormat('YYYY-MM-DD'),
+            'date' => $date,
             'layout' => $layout,
             'paymentTerms' => $paymentterms,
             'recipient' => $recipientBody,
