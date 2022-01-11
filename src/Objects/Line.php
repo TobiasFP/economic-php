@@ -8,7 +8,7 @@ class Line
     public int $lineNumber;
     public int $quantity;
     public object $product;
-    public Unit $unit;
+    public array $unit;
 
     public function __construct(object $product, Unit $unit, string $description = '', int $quantity = 1, int $lineNumber = 1)
     {
@@ -16,6 +16,6 @@ class Line
         $this->lineNumber = $lineNumber;
         $this->quantity = $quantity;
         $this->product = $product;
-        $this->unit = $unit;
+        $this->unit = (array)$unit;
     }
 }

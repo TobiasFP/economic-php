@@ -155,7 +155,7 @@ class Economics
     /**
      * @throws Exception
      */
-    public function createInvoiceDraft(object $customer, string $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", object $recipient = null): object
+    public function createInvoiceDraft(object $customer, string $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", int $netAmount = 0, object $recipient = null): object
     {
         if (!$this->isValidCurrency($currency)) {
             throw new InvalidCurrencyException("Currency is not allowed");
@@ -176,6 +176,9 @@ class Economics
             'lines' => $Lines,
         ];
 
+        if($$netAmount > 0) {
+            $draftBody['netAmount'] = $netAmount;
+        }
         if ($notes->isValid()) {
             $draftBody['notes'] = $notes;
         }
