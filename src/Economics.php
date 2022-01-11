@@ -155,7 +155,7 @@ class Economics
     /**
      * @throws Exception
      */
-    public function createInvoiceDraft(object $customer, string $date, object $layout, object $paymentterms, Notes $notes, Array $Lines = [], string $currency = "DKK", int $netAmount = 0, object $recipient = null): object
+    public function createInvoiceDraft(object $customer, string $date, object $layout, object $paymentterms, Notes $notes, array $Lines = [], string $currency = "DKK", float $netAmount = 0, float $grossAmount = 0, float $vatAmount = 0, object $recipient = null): object
     {
         if (!$this->isValidCurrency($currency)) {
             throw new InvalidCurrencyException("Currency is not allowed");
@@ -176,8 +176,19 @@ class Economics
             'lines' => $Lines,
         ];
 
-        if($$netAmount > 0) {
+        if ($$netAmount > 0) {
             $draftBody['netAmount'] = $netAmount;
+        }
+        if ($$grossAmount > 0) {
+            $draftBody['grossAmount'] = $grossAmount;
+        }
+        if ($vatAmount > 0) {
+            $draftBody['vatAmount'] = $vatAmount;
+        }
+
+        if ($netAmount + $vatAmount !== $grossAmount) {
+            //Todo: Create better exception
+            throw new Exception("Netamount and vatamount do not equal grossamount.!");
         }
         if ($notes->isValid()) {
             $draftBody['notes'] = $notes;
@@ -196,14 +207,14 @@ class Economics
     {
         $paymentTermsRes = $this->client->get("payment-terms")->getBody();
         return json_decode($paymentTermsRes)->collection;
-    }    
-    
+    }
+
     public function product(string $id): object
     {
         $product = $this->client->get("products/" . $id)->getBody();
         return json_decode($product);
     }
-    
+
     public function products(): array
     {
         $products = $this->client->get("products")->getBody();
