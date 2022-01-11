@@ -8,11 +8,14 @@ class Line
     public int $lineNumber;
     public int $quantity;
     public object $product;
-    public function __construct(object $product, string $description = '', int $quantity = 1, int $lineNumber = 1)
+    public Unit $unit;
+
+    public function __construct(object $product, Unit $unit, string $description = '', int $quantity = 1, int $lineNumber = 1)
     {
         $this->description = $description;
         $this->lineNumber = $lineNumber;
         $this->quantity = $quantity;
         $this->product = $product;
+        $this->unit = $unit;
     }
 }

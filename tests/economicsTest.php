@@ -6,6 +6,7 @@ use Economics\Filter;
 use Economics\Filters;
 use Economics\Objects\Line;
 use Economics\Objects\Notes;
+use Economics\Objects\Unit;
 use PHPUnit\Framework\TestCase;
 
 class economicsTest extends TestCase
@@ -98,14 +99,14 @@ class economicsTest extends TestCase
     public function testCreateInvoiceDraftWithLines()
     {
         $customer = $this->econ->customer(1);
-        $date = Carbon::now();
+        $date = new DateTime('now');
         $layout = $this->econ->layout(21);
         $paymentTerms = $this->econ->paymentTerms(1);
         $notes = new Notes("test");
         $products = $this->econ->products();
-        $line = new Line($products[0], "test");
+        $line = new Line($products[0], new Unit(1, 0, 199), "test");
         $lines = [$line];
-        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes, $lines, "DKK");
+        $draft = $this->econ->createInvoiceDraft($customer, $date->format('Y-m-d'), $layout, $paymentTerms, $notes, $lines, "DKK");
         self::assertEquals("", $draft->notes->textLine1);
         self::assertEquals("test", $draft->notes->heading);
         self::assertEquals("DKK", $draft->currency);
