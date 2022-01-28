@@ -10,6 +10,7 @@ use Economics\Exceptions\tooManyCustomersFoundException;
 use Economics\Objects\Notes;
 use Exception;
 use GuzzleHttp\Client;
+use stdClass;
 
 class Economics
 {
@@ -176,10 +177,10 @@ class Economics
             'lines' => $Lines,
         ];
 
-        if ($$netAmount > 0) {
+        if ($netAmount > 0) {
             $draftBody['netAmount'] = $netAmount;
         }
-        if ($$grossAmount > 0) {
+        if ($grossAmount > 0) {
             $draftBody['grossAmount'] = $grossAmount;
         }
         if ($vatAmount > 0) {
@@ -195,6 +196,13 @@ class Economics
         }
 
         return json_decode($this->client->post("/invoices/drafts", ['json' => $draftBody])->getBody());
+    }
+
+    public function BookInvoiceDraft(object $draftinvoice): object {
+        $draftBody = [
+            "draftInvoice" => $draftinvoice
+        ];
+        return json_decode($this->client->post("/invoices/booked", ['json' => $draftBody])->getBody());
     }
 
     public function paymentTerms(string $id): object

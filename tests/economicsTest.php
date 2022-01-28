@@ -77,20 +77,30 @@ class economicsTest extends TestCase
         self::assertEquals(123267, $this->econ->invoiceDraft(123267)->draftInvoiceNumber);
     }
 
+    public function testBookInvoiceDraft() {
+        $draft = $this->createInvoiceDraft();
+        $bookedInvoice = $this->econ->BookInvoiceDraft($draft);
+        self::assertEquals($draft->draftInvoiceNumber, $bookedInvoice);
+    }
+
     /**
      * @throws Exception
      */
     public function testCreateInvoiceDraft()
     {
+        $draft = $this->createInvoiceDraft();
+        self::assertEquals("", $draft->notes->textLine1);
+        self::assertEquals("test", $draft->notes->heading);
+        self::assertEquals("DKK", $draft->currency);
+    }
+
+    private function createInvoiceDraft(): object {
         $customer = $this->econ->customer(1);
         $date = Carbon::now();
         $layout = $this->econ->layout(21);
         $paymentTerms = $this->econ->paymentTerms(1);
         $notes = new Notes("test");
-        $draft = $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes);
-        self::assertEquals("", $draft->notes->textLine1);
-        self::assertEquals("test", $draft->notes->heading);
-        self::assertEquals("DKK", $draft->currency);
+        return $this->econ->createInvoiceDraft($customer, $date, $layout, $paymentTerms, $notes);
     }
 
     /**
